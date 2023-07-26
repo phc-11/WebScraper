@@ -10,30 +10,38 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 import time
 
-# r = requests.get("https://www.pokemon.com/us/pokedex")
-
-# urllib.request.urlretrieve("https://www.pokemon.com/us/pokedex", "temp.html")
-
-# filename = 'file:///'+os.getcwd()+'/'+'temp.html'
-# webbrowser.open_new_tab(filename)
-
+#Establish the path to the Chrome Driver
 path = '/Users/preas/Downloads/chromedriver_win32' 
+
+#Enitialize the instance of our browser driver
 driver = webdriver.Chrome()
+
+#Tell the driver to wait for the page to initizalize
 driver.implicitly_wait(200)
+
+#Give the driver the webpage we are going to scrape
 driver.get('https://www.pokemon.com/us/pokedex')
-driver.maximize_window()
-element = 'h5'
-#time.sleep(5)
-element = driver.find_elements(By.TAG_NAME,'h5')
 
-#driver.implicitly_wait(200)
-#element_text = element.text
+#Set the browser window to maximum size
+#driver.maximize_window()
 
+#Set what element we are going to scrape for
+#element = 'h5'
+
+#Search for the element by TAG WORKS
+#element = driver.find_elements(By.TAG_NAME,'h5')
+
+#Search for the element by CLASS WORKS
+element = driver.find_elements(By.CLASS_NAME,'id')
+
+#Holds the program so the user can load all elements on the page
 input("Press ENTER when ready")
 
+#Error checking
 print("This is the print: \n")
 print("This is element_test: ")
 
+#For loop to print the elements from out element list
 for e in element:
     print(e.text)
 
