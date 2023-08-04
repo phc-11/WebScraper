@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver import *
+from selenium.common.exceptions import *
 import time
 
 
@@ -26,35 +27,47 @@ def Initial():
 
     #Try & Exception to handle error logging through the CLI
 
-    #try:
+    try:
 
     #Enitialize the instance of our browser driver
-    driver = webdriver.Chrome(options=options)
+        driver = webdriver.Chrome(options=options)
 
-#Tell the driver to wait for the page to initizalize
-    driver.implicitly_wait(200)
+    #Tell the driver to wait for the page to initizalize
+        driver.implicitly_wait(200)
 
-#Calls function Input() to prompt user for webpage that we are going to scrape then feeds that string to driver
-    driver.get(webpageInput())
+    #Calls function Input() to prompt user for webpage that we are going to scrape then feeds that string to driver
+        driver.get(webpageInput())
 
-#Call function scrapeInput() to get input from the user about what elements we will scrape from the webpage
-    elementGroup, tempTag = scrapeInput()
+    #Call function scrapeInput() to get input from the user about what elements we will scrape from the webpage
+        elementGroup, tempTag = scrapeInput()
 
-    element = Scrape(elementGroup, tempTag, driver)
-
-
+        element = Scrape(elementGroup, tempTag, driver)
 
 
-    #Search for the element by CLASS WORKS
-        #element = driver.find_elements(By.CLASS_NAME,'id')
+
+
+        #Search for the element by CLASS WORKS
+            #element = driver.find_elements(By.CLASS_NAME,'id')
 
     #Except to print an error to the CLI and exit gracefully
+ 
 
-    # except:
-    #     print("An error has occurred.")
-    #     print("Please try again.")
-    #     driver.quit()
-    #     exit(0)
+    except (NoSuchElementException, UnboundLocalError, NoSuchWindowException):
+        driver.quit()
+        print("An error has occurred.")
+        print("Please try again.")
+        #driver.quit()
+        exit(0)
+
+    except (KeyboardInterrupt):
+        driver.quit()
+        print("The program was exited by the user's keyboard")
+        exit(0)
+
+    except(NoSuchWindowException):
+        driver.quit()
+        print("The browser was closed! Please keep the browser open until the scrape is completed.")
+
 
 
     #Holds the program so the user can load all elements on the page
@@ -74,6 +87,7 @@ def Initial():
         print("Closing program...")
         driver.quit()
         exit(0)
+
 
 
     #.quit() dumps contents so needs to executed last
@@ -100,7 +114,7 @@ def Scrape(elementGroup, tempTag, driver):
         match elementGroup[i]:
             case "Class":
                 print("here2")
-                element = driver.find_elements(By.CLASS_NAME,'id')
+                element = driver.find_elements(By.CLASS_NAME,r"{}".format(tempTag))
                 print("Here3")
 
 
@@ -196,5 +210,5 @@ Initial()
     #options.add_argument("--start-maximized")
 
 
-#TODO: NEED TO FIX SCRAPE(), currently when calling the driver to scrape it wont take our array of strings that hold the Group name
+#TODO: NEED TO FIX SCRAPE(), currently when calling the driver to scrape it wont take our array of strings that hold the Group name. Handle Keyboard Interrupt
 #NOTE: I have disbaled some try & except to see error logging
